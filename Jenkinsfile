@@ -32,11 +32,18 @@ pipeline {
     }
 
     post {
-        success {
-            echo "Deployment Successful!"
-        }
-        failure {
-            echo "Deployment Failed!"
-        }
+    success {
+        echo "Deployment Successful!"
+        emailext subject: "Jenkins Deployment Success ✅",
+                 body: "The Docker image has been successfully built and pushed to Docker Hub.",
+                 recipientProviders: [developers(), requestor()]
     }
+    failure {
+        echo "Deployment Failed ❌"
+        emailext subject: "Jenkins Deployment Failed ❌",
+                 body: "The Docker build or push failed. Check Jenkins logs.",
+                 recipientProviders: [developers(), requestor()]
+    }
+}
+
 }
